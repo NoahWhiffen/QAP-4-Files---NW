@@ -6,12 +6,31 @@
 
 # Import required libraries.
 import datetime
+import sys
 # All program constants.
 PROVINCES = ["NL", "NS", "NB", "PE", "QC", "ON", "MB", "SK", "AB", "BC", "YT", "NT", "NU"]
 PAYMENTOPTIONS = ["Full", "Monthly", "Down Payment"]
 extraCosts = 0
 monthlyPayments = 0
 downPayment = 0
+
+# Declare program functions.
+
+def monthFromToday():
+    pass
+
+# From the url: https://handhikayp.medium.com/creating-terminal-progress-bar-using-python-without-external-library-b51dd907129c
+def progressBar(iteration, total, prefix='', suffix='', length=30, fill='█'):
+    # Generate and display a progress bar with % complete at the end.
+ 
+    percent = ("{0:.1f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    bar = fill * filled_length + '-' * (length - filled_length)
+    sys.stdout.write(f'\r{prefix} |{bar}| {percent}% {suffix}')
+    sys.stdout.flush()
+
+def 
+
 
 # Main program starts here.
 while True:
@@ -28,17 +47,31 @@ while True:
         PROCESSING_FEE = float(consts[7].strip()) 
 
 
-    # User inputs with validations
+    # User inputs with validations 
+    
+    claimNum = input("Enter customer's claim number (done to quit): ")
+    if claimNum == "done":
+        exit
+    elif claimNum.isalpha():
+        print("Please enter a number.")
+    else:
+        break
+    claimNum = input("Enter customer's claim number (done to quit): ")
+    if claimNum == "done":
+        exit
+    elif claimNum.isalpha():
+        print("Please enter a number.")
+    else:
+        break
     firstName = input("Enter customer's first name: ").title()
     lastName = input("Enter customer's last name: ").title()
     address = input("Enter customer's street address:")
     city = input("Enter customer's city").title()
-    while True: 
-        province = input("Enter customer's province (XX): ").upper()
-        if province in PROVINCES:
-            break
-        else:
-            print("Please enter a valid province.")
+    province = input("Enter customer's province (XX): ").upper()
+    if province in PROVINCES:
+        break
+    else:
+        print("Please enter a valid province.")
     while True:
         postalCode = input("Enter customer's postal code (X1X1X1): ")
         if len(postalCode) == 6:
@@ -82,7 +115,6 @@ while True:
             downPayment = input("Enter amount of down payment: ") 
     # Perform required calculations.
 
-
     totalInsPremium = insPremium + extraCosts
     hst = totalInsPremium * HST_RATE
     totalCost = totalInsPremium + hst
@@ -95,8 +127,7 @@ while True:
         extraCosts += GLASS_CHARGES
     if loanerCar == "Y":
         extraCosts += LOANER_CHARGES
-
-    
+ 
     if paymentPlan == "Full":
         monthlyPayments = 0
     if paymentPlan == "Down Payment":
@@ -105,8 +136,23 @@ while True:
         monthlyPayments = (totalCost + PROCESSING_FEE)/8
 
     invDate = datetime.datetime.now()
-    
+    monthFromToday()
+    # Append policy data to a file.
+    with open('customers.dat', 'a') as file:
+        file.write(f"{POLICY_NUM}")
+        file.write(f"{firstName}")
+        file.write(f"{lastName}")
+        file.write(f"{address}")
+        file.write(f"{city}")
+        file.write(f"{province}")
+        file.write(f"{postalCode}")
+        file.write(f"{phoneNum}")
+        file.write(f"{insuredCars}")
+        file.write(f"{extraLiability}")
+        file.write(f"{glassIns}")
+        file.write(f"{loanerCar}")
+        file.write(f"{paymentPlan}")
+        file.write(f"{invDate}")
 
-    # Close the file.
-
+        POLICY_NUM += 1
     # Output values in a receipt.
