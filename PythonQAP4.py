@@ -5,9 +5,12 @@
 # Date:        July 18th, 2024 - 
 
 # Import required libraries.
+
 import datetime
 import sys
+
 # All program constants.
+
 PROVINCES = ["NL", "NS", "NB", "PE", "QC", "ON", "MB", "SK", "AB", "BC", "YT", "NT", "NU"]
 PAYMENTOPTIONS = ["Full", "Monthly", "Down Payment"]
 extraCosts = 0
@@ -29,10 +32,9 @@ def progressBar(iteration, total, prefix='', suffix='', length=30, fill='█'):
     sys.stdout.write(f'\r{prefix} |{bar}| {percent}% {suffix}')
     sys.stdout.flush()
 
-def 
-
 
 # Main program starts here.
+
 while True:
     # Parse values from file and apply them to constants
     with open('const.dat', 'r') as f:
@@ -45,7 +47,6 @@ while True:
         LOANER_CHARGES = float(consts[5].strip())
         HST_RATE = float(consts[6].strip())
         PROCESSING_FEE = float(consts[7].strip()) 
-
 
     # User inputs with validations 
     
@@ -113,6 +114,7 @@ while True:
         paymentPlan = input("Which payment plan would the customer like to use? (Full, Monthly, Down Payment): ").title()
         if paymentPlan == "Down Payment":
             downPayment = input("Enter amount of down payment: ") 
+    
     # Perform required calculations.
 
     totalInsPremium = insPremium + extraCosts
@@ -137,6 +139,7 @@ while True:
 
     invDate = datetime.datetime.now()
     monthFromToday()
+    
     # Append policy data to a file.
     with open('customers.dat', 'a') as file:
         file.write(f"{POLICY_NUM}")
@@ -155,4 +158,45 @@ while True:
         file.write(f"{invDate}")
 
         POLICY_NUM += 1
+    
+    # String manipulation for display on the receipt.
+
+    fullName = f"{firstName:<20s} {lastName:<20s}"
+    phoneNumDSP = "(" + phoneNum[:3] + ")" + phoneNum[3:6] + "-" + phoneNum[6:]
+    extraLiabilityDSP = ""
+    glassInsDSP = ""
+    loanerCarDSP = ""
+    if extraLiability == "Y":
+        extraLiabilityDSP = LI_CHARGES
+    else:
+        extraLiabilityDSP = "NONE"
+    if glassIns == "Y":
+        glassInsDSP = GLASS_CHARGES
+    else:
+        glassInsDSP = "NONE"
+    if loanerCar == "Y":
+        loanerCarDSP = LOANER_CHARGES
+    else:
+        loanerCarDSP = "NONE"
+
     # Output values in a receipt.
+
+    print()
+    print("-------------------------------------------------------------------")
+    print("                     One Stop Insurance Company")
+    print("                           1-777-777-7777")
+    print("-------------------------------------------------------------------")
+    print(f"Name:  {fullName}                        Address: {address:15s}")
+    print(f"Phone: {phoneNumDSP}                              {city:12s} {province:2s}")
+    print(f"                                                  {postalCode}")
+    print("-------------------------------------------------------------------")
+    print(f"Insured vehicles: {insuredCars}          Extra Liability: {extraLiabilityDSP}")
+    print(f"Loaner Car:       {loanerCarDSP}         Glass Coverage:  {glassInsDSP}")
+    print()
+    print("-------------------------------------------------------------------")
+    print(f"Premium Charges: {insPremium}            Monthly Payment: {monthlyPayments}")
+    print(f"                                         Extra Costs:     {extraCosts}")
+    print(f"                                         Taxes:           {hst}")
+    print(f"Total Cost: {totalCost}                  Down Payment:    {downPayment}")
+    print("-------------------------------------------------------------------")
+
