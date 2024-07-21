@@ -58,6 +58,6 @@ const customer = new motelCustomer(
     "2024-07-25"
 );
 
-const descriptionElement = document.getElementById();
+const descriptionElement = document.getElementById(id="description");
 const description = customer.customerDesc();
 descriptionElement.innerHTML = `<p>${description}</p>`
