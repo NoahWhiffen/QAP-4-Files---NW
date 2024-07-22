@@ -16,6 +16,7 @@ PAYMENTOPTIONS = ["Full", "Monthly", "Down Payment"]
 extraCosts = 0
 monthlyPayments = 0
 downPayment = 0
+custClaims = []
 
 # Declare program functions.
 
@@ -50,20 +51,6 @@ while True:
 
     # User inputs with validations 
     
-    claimNum = input("Enter customer's claim number (done to quit): ")
-    if claimNum == "done":
-        exit
-    elif claimNum.isalpha():
-        print("Please enter a number.")
-    else:
-        break
-    claimNum = input("Enter customer's claim number (done to quit): ")
-    if claimNum == "done":
-        exit
-    elif claimNum.isalpha():
-        print("Please enter a number.")
-    else:
-        break
     firstName = input("Enter customer's first name: ").title()
     lastName = input("Enter customer's last name: ").title()
     address = input("Enter customer's street address:")
@@ -114,6 +101,37 @@ while True:
         paymentPlan = input("Which payment plan would the customer like to use? (Full, Monthly, Down Payment): ").title()
         if paymentPlan == "Down Payment":
             downPayment = input("Enter amount of down payment: ") 
+    while True:
+        claimNum = input("Enter customer's claim number (done to quit): ")
+        if claimNum == "done":
+            exit
+        elif claimNum.isalpha():
+            print("Please enter a number.")
+        else:
+            break
+        claimNum = input("Enter customer's claim number (done to quit): ")
+        if claimNum == "done":
+            exit
+        elif claimNum.isalpha():
+            print("Please enter a number.")
+        else:
+            break
+        claimDate = input("Enter date of claim (YYYY-MM-DD): ")
+        if len(claimNum) == 10:
+            if claimDate[:4].isdigit() and claimDate[4] == "-":
+                if claimDate[5:7].isdigit() and claimDate[7] == "-":
+                    if claimDate[8:].isdigit():
+                        break
+        else:
+            print("Please enter date in required format. (YYYY-MM-DD)")
+    while True:
+        claimAmount = input("Enter amount of claim: ")
+        if claimAmount.isdigit():
+            break
+        else:
+            print("Amount must be a dollar value.")
+    custClaims.append((claimNum, claimDate, claimAmount))
+
     
     # Perform required calculations.
 
@@ -139,6 +157,7 @@ while True:
 
     invDate = datetime.datetime.now()
     monthFromToday()
+    claimDateFormat = datetime.strftime("%Y-%M-%D")
     
     # Append policy data to a file.
     with open('customers.dat', 'a') as file:
@@ -199,4 +218,9 @@ while True:
     print(f"                                         Taxes:           {hst}")
     print(f"Total Cost: {totalCost}                  Down Payment:    {downPayment}")
     print("-------------------------------------------------------------------")
-
+    print()
+    print("              Claim #    Claim Date          Amount")
+    print("              --------------------------------------")
+    
+    for claim in custClaims(1,3):
+        print(f"              {claimNum:>5d}      {claimDateFormat}          ${claimAmount:>.2f}")
