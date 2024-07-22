@@ -33,6 +33,8 @@ def progressBar(iteration, total, prefix='', suffix='', length=30, fill='█'):
     sys.stdout.write(f'\r{prefix} |{bar}| {percent}% {suffix}')
     sys.stdout.flush()
 
+def placeholder():
+    pass
 
 # Main program starts here.
 
@@ -54,12 +56,13 @@ while True:
     firstName = input("Enter customer's first name: ").title()
     lastName = input("Enter customer's last name: ").title()
     address = input("Enter customer's street address:")
-    city = input("Enter customer's city").title()
-    province = input("Enter customer's province (XX): ").upper()
-    if province in PROVINCES:
-        break
-    else:
-        print("Please enter a valid province.")
+    city = input("Enter customer's city: ").title()
+    while True:
+        province = input("Enter customer's province (XX): ").upper()
+        if province in PROVINCES:
+            break
+        else:
+            print("Please enter a valid province.")
     while True:
         postalCode = input("Enter customer's postal code (X1X1X1): ")
         if len(postalCode) == 6:
@@ -98,9 +101,17 @@ while True:
             break
         else:
             print("Please enter Y or N.")
+    while True:
         paymentPlan = input("Which payment plan would the customer like to use? (Full, Monthly, Down Payment): ").title()
-        if paymentPlan == "Down Payment":
-            downPayment = input("Enter amount of down payment: ") 
+        if paymentPlan in PAYMENTOPTIONS:
+            if paymentPlan == "Down Payment":
+                downPayment = float(input("Enter amount of down payment: "))
+                break
+            elif paymentPlan == "Monthly" or paymentPlan == "Full":
+                break
+            else:
+                print("Please enter one of the options listed.")
+
     while True:
         claimNum = input("Enter customer's claim number (done to quit): ")
         if claimNum == "done":
@@ -116,14 +127,14 @@ while True:
             print("Please enter a number.")
         else:
             break
+    while True:
         claimDate = input("Enter date of claim (YYYY-MM-DD): ")
-        if len(claimNum) == 10:
+        if len(claimDate) == 10:
             if claimDate[:4].isdigit() and claimDate[4] == "-":
                 if claimDate[5:7].isdigit() and claimDate[7] == "-":
                     if claimDate[8:].isdigit():
                         break
-        else:
-            print("Please enter date in required format. (YYYY-MM-DD)")
+        print("Please enter date in required format. (YYYY-MM-DD)")
     while True:
         claimAmount = input("Enter amount of claim: ")
         if claimAmount.isdigit():
@@ -134,12 +145,13 @@ while True:
 
     
     # Perform required calculations.
-
+    
+    insPremium = BASE_PREMIUM + (BASE_PREMIUM * DISCOUNT)
     totalInsPremium = insPremium + extraCosts
     hst = totalInsPremium * HST_RATE
     totalCost = totalInsPremium + hst
 
-    insPremium = BASE_PREMIUM + (BASE_PREMIUM * DISCOUNT)
+    
     
     if extraLiability == "Y":
         extraCosts += LI_CHARGES
@@ -157,7 +169,7 @@ while True:
 
     invDate = datetime.datetime.now()
     monthFromToday()
-    claimDateFormat = datetime.strftime("%Y-%M-%D")
+    claimDateFormat = datetime.datetime.strptime("%Y-%M-%D")
     
     # Append policy data to a file.
     with open('customers.dat', 'a') as file:
