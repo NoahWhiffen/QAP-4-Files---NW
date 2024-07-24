@@ -2,42 +2,27 @@
 # Description: A program for One Stop Insurance Company to 
 #              enter and calculate policy information for customers.
 # Author:      Noah Whiffen - SD12
-# Date:        July 18th, 2024 - 
+# Date:        July 18th, 2024 - July 23rd, 2024
 
 # Import required libraries.
 
 import datetime
 import sys
 import time
-import dateutil
 # Program constants and variables.
 
 PROVINCES = ["NL", "NS", "NB", "PE", "QC", "ON", "MB", "SK", "AB", "BC", "YT", "NT", "NU"]
 PAYMENTOPTIONS = ["Full", "Monthly", "Down Payment"]
-custClaims = []
+custClaims = [("14567", "2022-08-09", "$8200.00"), ("14568", "2019-04-14", "$7400.00"), ("14569", "2017-12-18", "$2200.00")]
 file = "customers.dat"
 f = "const.dat"
 invDate = datetime.datetime.now()
-firstPayment = None
-# Counters and accumulators.
-extraCosts = 0
 monthlyPayments = 0
 downPayment = 0
+extraCosts = 0
+firstPayment = None
 
 # Declare program functions.
-
-def getLastID():
-    try:
-        with open("customers.dat", "r") as file:
-            lines = file.readlines()
-            if lines:
-                lastLine = lines[-1].strip()
-                lastID = int(lastLine.split(',')[0].strip()) + 1
-                return lastID + 1
-            else:
-                return "customers.dat"
-    except FileNotFoundError:
-        return "customers.dat"
 
 def paymentDate(invDate):
     if invDate.month == 12:
@@ -59,20 +44,20 @@ def progressBar(iteration, total, prefix='', suffix='', length=30, fill='█'):
 
 def saveData():
     with open('customers.dat', 'a') as file:
-        file.write(f"{POLICY_NUM}")
-        file.write(f"{firstName}")
-        file.write(f"{lastName}")
-        file.write(f"{address}")
-        file.write(f"{city}")
-        file.write(f"{province}")
-        file.write(f"{postalCode}")
-        file.write(f"{phoneNum}")
-        file.write(f"{insuredCars}")
-        file.write(f"{extraLiability}")
-        file.write(f"{glassIns}")
-        file.write(f"{loanerCar}")
-        file.write(f"{paymentPlan}")
-        file.write(f"{invDate}")
+        file.write(f"{POLICY_NUM},")
+        file.write(f"{firstName},")
+        file.write(f"{lastName},")
+        file.write(f"{address},")
+        file.write(f"{city},")
+        file.write(f"{province},")
+        file.write(f"{postalCode},")
+        file.write(f"{phoneNum},")
+        file.write(f"{insuredCars},")
+        file.write(f"{extraLiability},")
+        file.write(f"{glassIns},")
+        file.write(f"{loanerCar},")
+        file.write(f"{paymentPlan},")
+        file.write(f"{invDate}\n")
 
 # Main program starts here.
 
@@ -92,8 +77,12 @@ while True:
     # User inputs with validations 
     print()
     print("--------------------------------------------------")
-    print()
-    firstName = input("Enter customer's first name: ").title()
+    while True:
+        firstName = input("Enter customer's first name (done to quit): ").title()
+        if firstName.lower() == "done":
+            sys.exit()
+        else:
+            break
     lastName = input("Enter customer's last name: ").title()
     address = input("Enter customer's street address: ")
     city = input("Enter customer's city: ").title()
@@ -153,9 +142,9 @@ while True:
                 print("Please enter one of the options listed.")
 
     while True:
-        claimNum = input("Enter customer's claim number (done to quit): ")
-        if claimNum == "done":
-            exit
+        claimNum = input("Enter customer's claim number: ")
+        if claimNum.lower() == "done":
+            sys.exit()           
         elif claimNum.isalpha():
             print("Please enter a number.")
         else:
@@ -184,19 +173,20 @@ while True:
     custClaims.append((claimNum, claimDate, claimAmount))
 
     # Perform required calculations.
+    insuredCars = int(insuredCars) # This needed to go here instead of in the inputs as the .isidigit() wouldn't work.
+    insPremium = BASE_PREMIUM + (insuredCars - 1) + (BASE_PREMIUM * DISCOUNT)
     
-    insPremium = BASE_PREMIUM + (BASE_PREMIUM * DISCOUNT)
+    if extraLiability == "Y":
+        extraCosts += insuredCars * LI_CHARGES
+    if glassIns == "Y":
+        extraCosts += insuredCars * GLASS_CHARGES
+    if loanerCar == "Y":
+        extraCosts += insuredCars * LOANER_CHARGES
+    
     totalInsPremium = insPremium + extraCosts
     hst = totalInsPremium * HST_RATE
     totalCost = totalInsPremium + hst
 
-    if extraLiability == "Y":
-        extraCosts += LI_CHARGES
-    if glassIns == "Y":
-        extraCosts += GLASS_CHARGES
-    if loanerCar == "Y":
-        extraCosts += LOANER_CHARGES
- 
     if paymentPlan == "Full":
         monthlyPayments = 0
     if paymentPlan == "Down Payment":
@@ -206,33 +196,41 @@ while True:
 
     # String manipulation & formatting.
 
+    fullNameDSP = f"{firstName:<s} {lastName:<s}"
     phoneNumDSP = "(" + phoneNum[:3] + ")" + phoneNum[3:6] + "-" + phoneNum[6:]
-    invDateFormat = datetime.datetime.strptime(invDate, "%Y-%m-%d")
-    claimDateFormat = datetime.datetime.strptime(claimDate, "%Y-%m-%d")
+    invDateFormat = invDate.strftime("%Y-%m-%d")
     insPremiumDSP = f"${insPremium:>.2f}"
+    insuredCarsDSP = f"{insuredCars:>d}"
+    claimAmount = float(claimAmount)
+    claimAmountDSP = f"${claimAmount:>.2f}"
     hstDSP = f"${hst:>.2f}"
     totalCostDSP = f"${totalCost:>.2f}"
     extraCostsDSP = f"${extraCosts:>.2f}"
+    monthlyPaymentsDSP = f"${monthlyPayments:>.2f}"
+    downPaymentDSP = f"${downPayment:>.2f}"
 
     extraLiabilityDSP = ""
     glassInsDSP = ""
     loanerCarDSP = ""
     if extraLiability == "Y":
         extraLiabilityDSP = LI_CHARGES
+        extraLiabilityDSP = f"${LI_CHARGES:>.2f}"
     else:
         extraLiabilityDSP = "None"
     if glassIns == "Y":
         glassInsDSP = GLASS_CHARGES
+        glassInsDSP = f"${GLASS_CHARGES:>.2f}"
     else:
         glassInsDSP = "None"
     if loanerCar == "Y":
         loanerCarDSP = LOANER_CHARGES
+        loanerCarDSP = f"${LOANER_CHARGES:>.2F}"
     else:
         loanerCarDSP = "None"
 
     # Progress bar to simulate work.
 
-    totalIterations = 30
+    totalIterations = 15
     Message = "Saving Data ..."
     
     for i in range(totalIterations + 1):
@@ -242,49 +240,54 @@ while True:
     POLICY_NUM += 1
     
     paymentDate(invDate)
+    
+    # Append customer info to a file.
+    
     saveData()
     print("Information has been saved.")
-
-    # Append customer info to a file.
-
+    
     # Output values in a receipt.
 
     print()
-    print("-------------------------------------------------------------------")
+    print("----------------------------------------------------------------------")
     print("                     One Stop Insurance Company")
-    print("-------------------------------------------------------------------")
+    print("----------------------------------------------------------------------")
     print("                          CUSTOMER DETAILS")
-    print(f"Policy #: {POLICY_NUM}                      Date:    {invDate}")
-    print(f"Name:     {firstName} {lastName}                Address: {address}")
-    print(f"Phone:    {phoneNumDSP}                      {city}      {province:2s}")
-    print(f"                         COVERAGE DETAILS    {postalCode}")
-    print("-------------------------------------------------------------------")
-    print(f"Insured vehicles: {insuredCars}                           Extra Liability: {extraLiabilityDSP}")
-    print(f"Loaner Car:       {loanerCarDSP}                        Glass Coverage:  {glassInsDSP}")
-    print("                                          ---------------------------")
-    print("                          PAYMENT DETAILS")
-    print("---------------------------------------------------------------------")
-    print(f"Premium Charges: {insPremium}                    Monthly Payment: {monthlyPayments}")
-    print(f"Taxes:           {hst}                           Extra Costs:     {extraCosts}")
-    print(f"Total:           {totalCost}                     Down Payment:    {downPayment}")
-    print("                                          ---------------------------")
+    print(f"Policy #: {POLICY_NUM}                        Date:     {invDateFormat}")
+    print(f"Name:     {fullNameDSP}                Address:  {address}")
+    print(f"Phone:    {phoneNumDSP}                         {city},    {province}")
+    print(f"                                                {postalCode}")
+    print("                          COVERAGE DETAILS       ")
+    print("----------------------------------------------------------------------")
+    print(f"Insured vehicles: {insuredCarsDSP}                            Extra Liability: {extraLiabilityDSP}")
+    print(f"Loaner Car:       {loanerCarDSP}                         Glass Coverage:  {glassInsDSP}")
+    print("                                              --------------------------")
+    print("                           PAYMENT DETAILS")
+    print("------------------------------------------------------------------------")
+    print(f"Premium Charges: {insPremiumDSP}                      Monthly Payment: {monthlyPaymentsDSP}")
+    print(f"Taxes:           {hstDSP}                       Extra Costs:     {extraCostsDSP}")
+    print(f"Total:           {totalCostDSP}                      Down Payment:    {downPaymentDSP}")
+    print("                                              --------------------------")
     if firstPayment == None:
         print()
     else:
         print(f"First Payment on: {firstPayment}")
     print()
-    print("              Claim #    Claim Date          Amount")
+    print("              Claim #       Claim Date      Amount")
     print("              --------------------------------------")
     
     for claim in custClaims:
-        print(f"              {claimNum:>5d}      {claimDateFormat}          ${claimAmount:>.2f}")
+        claimNum = claim[0]
+        claimDate = claim[1]
+        claimAmount = claim[2]
+        print(f"              {claimNum:>}         {claimDate:>}   {claimAmountDSP}")
 
-    
+        
     # Prompt for user to generate another invoice if needed.
     cont = input("Would you like to make another invoice? (Y/N)").upper()
     if cont == "N":
-        quit
-    elif cont == "Y":
         break
+    elif cont == "Y":
+        continue
     else:
         print("Please enter Y or N.")
