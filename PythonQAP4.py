@@ -198,6 +198,8 @@ while True:
 
     fullNameDSP = f"{firstName:<s} {lastName:<s}"
     phoneNumDSP = "(" + phoneNum[:3] + ")" + phoneNum[3:6] + "-" + phoneNum[6:]
+    addressDSP = f"{address:<20s}"
+    cityDSP = f"{city:<17s}"
     invDateFormat = invDate.strftime("%Y-%m-%d")
     insPremiumDSP = f"${insPremium:>.2f}"
     insuredCarsDSP = f"{insuredCars:>d}"
@@ -254,13 +256,13 @@ while True:
     print("----------------------------------------------------------------------")
     print("                          CUSTOMER DETAILS")
     print(f"Policy #: {POLICY_NUM}                        Date:     {invDateFormat}")
-    print(f"Name:     {fullNameDSP}                Address:  {address}")
+    print(f"Name:     {fullNameDSP}                Address:  {addressDSP}")
     print(f"Phone:    {phoneNumDSP}                         {city},    {province}")
     print(f"                                                {postalCode}")
     print("                          COVERAGE DETAILS       ")
     print("----------------------------------------------------------------------")
-    print(f"Insured vehicles: {insuredCarsDSP}                            Extra Liability: {extraLiabilityDSP}")
-    print(f"Loaner Car:       {loanerCarDSP}                         Glass Coverage:  {glassInsDSP}")
+    print(f"Insured vehicles: {insuredCarsDSP}                             Extra Liability: {extraLiabilityDSP}")
+    print(f"Loaner Car:       {loanerCarDSP}                          Glass Coverage:  {glassInsDSP}")
     print("                                              --------------------------")
     print("                           PAYMENT DETAILS")
     print("------------------------------------------------------------------------")
@@ -280,7 +282,7 @@ while True:
         claimNum = claim[0]
         claimDate = claim[1]
         claimAmount = claim[2]
-        print(f"              {claimNum:>}         {claimDate:>}   {claimAmountDSP}")
+        print(f"              {claimNum:<s}         {claimDate:<s}   {claimAmountDSP}")
 
         
     # Prompt for user to generate another invoice if needed.
