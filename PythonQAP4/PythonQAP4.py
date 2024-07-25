@@ -145,8 +145,12 @@ while True:
         paymentPlan = input("Which payment plan would the customer like to use? (Full, Monthly, Down Payment): ").title()
         if paymentPlan in PAYMENTOPTIONS:
             if paymentPlan == "Down Payment":
-                downPayment = float(input("Enter amount of down payment: "))
-                break
+                downPayment = input("Enter amount of down payment: ")
+                if downPayment.isalpha():
+                    print("Please enter a number.")
+                else:
+                    downPayment = float(downPayment)
+                    break
             elif paymentPlan == "Monthly" or paymentPlan == "Full":
                 break
             else:
@@ -248,8 +252,6 @@ while True:
         time.sleep(0.1)
         progressBar(i, totalIterations, prefix=Message, suffix='Complete', length=50)
     
-    POLICY_NUM += 1
-    
     firstPayment = paymentDate()
     firstPaymentFormat = firstPayment.strftime("%Y-%m-%d")
     
@@ -257,7 +259,7 @@ while True:
     
     saveData()
     print("Information has been saved.")
-    
+    print()
     # Output values in a receipt.
 
     print()
@@ -266,13 +268,13 @@ while True:
     print("------------------------------------------------------------------------")
     print("                           CUSTOMER DETAILS")
     print(f"Policy #: {POLICY_NUM}                        Date:     {invDateFormat}")
-    print(f"Name:     {fullNameDSP}                 Address:    {address}")
+    print(f"Name:     {fullNameDSP}                Address:  {address}")
     print(f"Phone:    {phoneNumDSP}                        {city},    {province}")
     print(f"                                                {postalCode}")
     print("                           COVERAGE DETAILS       ")
     print("------------------------------------------------------------------------")
     print(f"Insured vehicles: {insuredCarsDSP}                             Extra Liability: {extraLiabilityDSP}")
-    print(f"Loaner Car:       {loanerCarDSP}                          Glass Coverage:  {glassInsDSP}")
+    print(f"Loaner Car:       {loanerCarDSP}                       Glass Coverage:  {glassInsDSP}")
     print("                                              --------------------------")
     print("                            PAYMENT DETAILS")
     print("------------------------------------------------------------------------")
@@ -283,9 +285,9 @@ while True:
     if firstPayment == None:
         print()
     else:
-        print(f"First Payment on: {firstPayment}")
+        print(f"First Payment on: {firstPaymentFormat}")
     print()
-    print("              Claim #       Claim Date      Amount")
+    print("              Claim #     Claim Date      Amount")
     print("              --------------------------------------")
     
     for claim in custClaims:
@@ -293,13 +295,15 @@ while True:
         claimDate = claim[1]
         claimAmount = claim[2]
         claimAmount = float(claimAmount)
-        print(f"              {claimNum:<s}         {claimDate:<s}   ${claimAmount:>.2f}")
+        print(f"              {claimNum:<s}       {claimDate:<s}   ${claimAmount:<.2f}")
 
     # Save data to file and increment policy number. 
 
     POLICY_NUM += 1
     saveData()
+    print()
     print("Information has been saved.")
+    print()
     
     # Prompt for user to generate another invoice if needed.
     cont = input("Would you like to make another invoice? (Y/N)").upper()
