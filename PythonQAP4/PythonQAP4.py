@@ -214,7 +214,6 @@ while True:
     invDateFormat = invDate.strftime("%Y-%m-%d")
     insPremiumDSP = f"${insPremium:>.2f}"
     insuredCarsDSP = f"{insuredCars:>d}"
-    claimAmount = float(claimAmount)
     hstDSP = f"${hst:>.2f}"
     totalCostDSP = f"${totalCost:>.2f}"
     extraCostsDSP = f"${extraCosts:>.2f}"
@@ -249,12 +248,15 @@ while True:
         time.sleep(0.1)
         progressBar(i, totalIterations, prefix=Message, suffix='Complete', length=50)
     
+    POLICY_NUM += 1
     
     firstPayment = paymentDate()
     firstPaymentFormat = firstPayment.strftime("%Y-%m-%d")
     
     # Append customer info to a file.
-   
+    
+    saveData()
+    print("Information has been saved.")
     
     # Output values in a receipt.
 
