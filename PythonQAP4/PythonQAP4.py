@@ -203,8 +203,6 @@ while True:
     invDateFormat = invDate.strftime("%Y-%m-%d")
     insPremiumDSP = f"${insPremium:>.2f}"
     insuredCarsDSP = f"{insuredCars:>d}"
-    claimAmount = float(claimAmount)
-    claimAmountDSP = f"${claimAmount:>.2f}"
     hstDSP = f"${hst:>.2f}"
     totalCostDSP = f"${totalCost:>.2f}"
     extraCostsDSP = f"${extraCosts:>.2f}"
@@ -239,15 +237,15 @@ while True:
         time.sleep(0.1)
         progressBar(i, totalIterations, prefix=Message, suffix='Complete', length=50)
     
-    POLICY_NUM += 1
+
     
-    paymentDate(invDate)
+    firstPayment = paymentDate(invDate)
     
     # Append customer info to a file.
     
     saveData()
     print("Information has been saved.")
-    
+    POLICY_NUM += 1
     # Output values in a receipt.
 
     print()
@@ -282,7 +280,7 @@ while True:
         claimNum = claim[0]
         claimDate = claim[1]
         claimAmount = claim[2]
-        print(f"              {claimNum:<s}         {claimDate:<s}   {claimAmountDSP}")
+        print(f"              {claimNum:<s}         {claimDate:<s}   {claimAmount:>.2f}")
 
         
     # Prompt for user to generate another invoice if needed.
