@@ -21,7 +21,6 @@ monthlyPayments = 0
 downPayment = 0
 extraCosts = 0
 firstPayment = None
-
 # Declare program functions.
 
 def paymentDate():
@@ -45,6 +44,7 @@ def progressBar(iteration, total, prefix='', suffix='', length=30, fill='█'):
 
 def saveData():
     with open('customers.dat', 'a') as file:
+        global POLICY_NUM
         file.write(f"{POLICY_NUM},")
         file.write(f"{firstName},")
         file.write(f"{lastName},")
@@ -213,33 +213,31 @@ while True:
 
     fullNameDSP = f"{firstName:<s} {lastName:<s}"
     phoneNumDSP = "(" + phoneNum[:3] + ") " + phoneNum[3:6] + "-" + phoneNum[6:]
-    addressDSP = f"{address}"
-    cityDSP = f"{city}"
     invDateFormat = invDate.strftime("%Y-%m-%d")
-    insPremiumDSP = f"${insPremium:>.2f}"
-    insuredCarsDSP = f"{insuredCars:>d}"
-    hstDSP = f"${hst:>.2f}"
-    totalCostDSP = f"${totalCost:>.2f}"
-    extraCostsDSP = f"${extraCosts:>.2f}"
-    monthlyPaymentsDSP = f"${monthlyPayments:>.2f}"
-    downPaymentDSP = f"${downPayment:>.2f}"
+    insPremiumDSP = f"${insPremium:<.2f}"
+    insuredCarsDSP = f"{insuredCars:<d}"
+    hstDSP = f"${hst:<.2f}"
+    totalCostDSP = f"${totalCost:<.2f}"
+    extraCostsDSP = f"${extraCosts:<.2f}"
+    monthlyPaymentsDSP = f"${monthlyPayments:<.2f}"
+    downPaymentDSP = f"${downPayment:<.2f}"
 
     extraLiabilityDSP = ""
     glassInsDSP = ""
     loanerCarDSP = ""
     if extraLiability == "Y":
         extraLiabilityDSP = LI_CHARGES
-        extraLiabilityDSP = f"${LI_CHARGES:>6.2f}"
+        extraLiabilityDSP = f"${LI_CHARGES:<6.2f}"
     else:
         extraLiabilityDSP = "None"
     if glassIns == "Y":
         glassInsDSP = GLASS_CHARGES
-        glassInsDSP = f"${GLASS_CHARGES:>6.2f}"
+        glassInsDSP = f"${GLASS_CHARGES:<6.2f}"
     else:
         glassInsDSP = "None"
     if loanerCar == "Y":
         loanerCarDSP = LOANER_CHARGES
-        loanerCarDSP = f"${LOANER_CHARGES:>6.2F}"
+        loanerCarDSP = f"${LOANER_CHARGES:<6.2F}"
     else:
         loanerCarDSP = "None"
 
@@ -256,7 +254,7 @@ while True:
     firstPaymentFormat = firstPayment.strftime("%Y-%m-%d")
     
     # Append customer info to a file.
-    
+    POLICY_NUM += 1
     saveData()
     print("Information has been saved.")
     print()
@@ -268,13 +266,13 @@ while True:
     print("------------------------------------------------------------------------")
     print("                           CUSTOMER DETAILS")
     print(f"Policy #: {POLICY_NUM}                        Date:     {invDateFormat}")
-    print(f"Name:     {fullNameDSP}                Address:  {address}")
-    print(f"Phone:    {phoneNumDSP}                        {city},    {province}")
+    print(f"Name:     {fullNameDSP}                Address:    {address:<30s}")
+    print(f"Phone:    {phoneNumDSP}                        {city:<16s},    {province:<3s}")
     print(f"                                                {postalCode}")
     print("                           COVERAGE DETAILS       ")
     print("------------------------------------------------------------------------")
-    print(f"Insured vehicles: {insuredCarsDSP}                             Extra Liability: {extraLiabilityDSP}")
-    print(f"Loaner Car:       {loanerCarDSP}                       Glass Coverage:  {glassInsDSP}")
+    print(f"Insured vehicles: {insuredCarsDSP}                            Extra Liability: {extraLiabilityDSP}")
+    print(f"Loaner Car:       {loanerCarDSP}                      Glass Coverage:  {glassInsDSP}")
     print("                                              --------------------------")
     print("                            PAYMENT DETAILS")
     print("------------------------------------------------------------------------")
@@ -295,7 +293,7 @@ while True:
         claimDate = claim[1]
         claimAmount = claim[2]
         claimAmount = float(claimAmount)
-        print(f"              {claimNum:<s}       {claimDate:<s}   ${claimAmount:<.2f}")
+        print(f"              {claimNum:<8s}    {claimDate:<10s}      ${claimAmount:<10.2f}")
 
     # Save data to file and increment policy number. 
 
