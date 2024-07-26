@@ -2,7 +2,7 @@
 # Description: A program for One Stop Insurance Company to 
 #              enter and calculate policy information for customers.
 # Author:      Noah Whiffen - SD12
-# Date:        July 18th, 2024 - 
+# Date:        July 18th, 2024 - July 26th, 2024
 
 # Import required libraries.
 
